@@ -1,22 +1,17 @@
 {
-  "situation_classes": [
-    "HIGH",
-    "LOW",
-    "MEDIUM"
-  ],
-  "exercise_classes": [
-    "HIGH",
-    "LOW",
-    "MEDIUM"
-  ],
   "situation_mapping": {
-    "HIGH": 0,
     "LOW": 1,
-    "MEDIUM": 2
+    "MEDIUM": 2,
+    "HIGH": 3
   },
   "exercise_mapping": {
-    "HIGH": 0,
-    "LOW": 1,
-    "MEDIUM": 2
+    "LOW": 0,
+    "MEDIUM": 1,
+    "HIGH": 2
+  },
+  "exercise_decoding": {
+    "0": "LOW",
+    "1": "MEDIUM",
+    "2": "HIGH"
   }
 }

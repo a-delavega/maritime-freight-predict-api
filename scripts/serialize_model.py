@@ -47,11 +47,9 @@ def load_labeled_data(folder: str) -> pd.DataFrame:
 
 def preprocess_and_aggregate(
     df: pd.DataFrame,
-) -> tuple[pd.DataFrame, LabelEncoder, LabelEncoder]:
-    """Encode labels and aggregate features per exercise."""
+) -> tuple[pd.DataFrame, dict, dict]:
+    """Encode labels using semantic ordinal scaling and aggregate features per exercise."""
     # Map Spanish dataset labels to English domain values
-    # Original labels: BAJA, MEDIA, ALTA
-    # Target English: LOW, MEDIUM, HIGH
     spanish_to_english = {
         "ALTA": "HIGH",
         "BAJA": "LOW",
@@ -60,15 +58,25 @@ def preprocess_and_aggregate(
     df["SituationDifficulty"] = df["DificultadSituacion"].map(spanish_to_english)
     df["ExerciseDifficulty"] = df["DificultadEjercicio"].map(spanish_to_english)
 
-    label_encoder_situation = LabelEncoder()
-    # Alphabetical order: HIGH=0, LOW=1, MEDIUM=2
-    df["SituationDifficultyEncoded"] = label_encoder_situation.fit_transform(
-        df["SituationDifficulty"]
+    # Semantic ordinal encoding: LOW=1 (easy), MEDIUM=2 (moderate), HIGH=3 (severe)
+    situation_ordinal_mapping = {
+        "LOW": 1,
+        "MEDIUM": 2,
+        "HIGH": 3,
+    }
+    df["SituationDifficultyEncoded"] = df["SituationDifficulty"].map(
+        situation_ordinal_mapping
     )
 
-    label_encoder_exercise = LabelEncoder()
-    df["ExerciseDifficultyEncoded"] = label_encoder_exercise.fit_transform(
-        df["ExerciseDifficulty"]
+    # Target class mapping for model output (0-indexed for XGBoost multi:softprob)
+    # Class 0: LOW, Class 1: MEDIUM, Class 2: HIGH
+    exercise_class_mapping = {
+        "LOW": 0,
+        "MEDIUM": 1,
+        "HIGH": 2,
+    }
+    df["ExerciseDifficultyEncoded"] = df["ExerciseDifficulty"].map(
+        exercise_class_mapping
     )
 
     # Aggregate per exercise
@@ -87,10 +95,10 @@ def preprocess_and_aggregate(
     data = pd.merge(aggregated, labels, on="Ejercicio")
 
     print(f"Aggregated to {len(data)} exercises")
-    print(f"LabelEncoder situation classes: {list(label_encoder_situation.classes_)}")
-    print(f"LabelEncoder exercise classes: {list(label_encoder_exercise.classes_)}")
+    print(f"Situation ordinal mapping: {situation_ordinal_mapping}")
+    print(f"Exercise class mapping: {exercise_class_mapping}")
 
-    return data, label_encoder_situation, label_encoder_exercise
+    return data, situation_ordinal_mapping, exercise_class_mapping
 
 
 def train_model(data: pd.DataFrame) -> Pipeline:
@@ -160,40 +168,6 @@ def train_model(data: pd.DataFrame) -> Pipeline:
     return best_model
 
 
-def validate_label_encoding(
-    label_encoder_situation: LabelEncoder, label_encoder_exercise: LabelEncoder
-) -> dict:
-    """Validate that label encoding matches our hardcoded domain mapping."""
-    situation_classes = list(label_encoder_situation.classes_)
-    exercise_classes = list(label_encoder_exercise.classes_)
-
-    print("\n--- VALIDATION ---")
-    print(
-        f"Situation encoding: {dict(zip(situation_classes, label_encoder_situation.transform(situation_classes)))}"
-    )
-    print(
-        f"Exercise encoding: {dict(zip(exercise_classes, label_encoder_exercise.transform(exercise_classes)))}"
-    )
-
-    metadata = {
-        "situation_classes": situation_classes,
-        "exercise_classes": exercise_classes,
-        "situation_mapping": dict(
-            zip(
-                situation_classes,
-                [int(x) for x in label_encoder_situation.transform(situation_classes)],
-            )
-        ),
-        "exercise_mapping": dict(
-            zip(
-                exercise_classes,
-                [int(x) for x in label_encoder_exercise.transform(exercise_classes)],
-            )
-        ),
-    }
-    return metadata
-
-
 def main():
     print("=" * 60)
     print("Maritime Navigation Model Serialization Script")
@@ -202,14 +176,19 @@ def main():
     # 1. Load data
     df = load_labeled_data(DATA_FOLDER)
 
-    # 2. Preprocess
-    data, le_situation, le_exercise = preprocess_and_aggregate(df)
+    # 2. Preprocess with semantic ordinal scaling
+    data, situation_mapping, exercise_mapping = preprocess_and_aggregate(df)
 
     # 3. Train
     best_model = train_model(data)
 
-    # 4. Validate encoding
-    metadata = validate_label_encoding(le_situation, le_exercise)
+    # 4. Metadata
+    inv_exercise_mapping = {v: k for k, v in exercise_mapping.items()}
+    metadata = {
+        "situation_mapping": situation_mapping,
+        "exercise_mapping": exercise_mapping,
+        "exercise_decoding": inv_exercise_mapping,
+    }
 
     # 5. Serialize
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -222,15 +201,22 @@ def main():
         json.dump(metadata, f, indent=2)
     print(f"Metadata saved to: {metadata_path}")
 
-    # 6. Verify load
+    # 6. Verify load with 4 HIGH situations test
     print("\n--- VERIFICATION ---")
     loaded_pipeline = joblib.load(OUTPUT_MODEL)
-    test_input = np.array([[1.0, 2.0, 0.0, 6]])  # mean=1, max=2, min=0, count=6
-    pred = loaded_pipeline.predict(test_input)
-    proba = loaded_pipeline.predict_proba(test_input)
-    print(f"Test prediction (class index): {pred[0]}")
-    print(f"Test probabilities: {proba[0]}")
-    print(f"Predicted class: {le_exercise.inverse_transform(pred)[0]}")
+    # Test 1: 4 HIGH situations (all 3.0) -> mean=3.0, max=3.0, min=3.0, count=4
+    test_all_high = np.array([[3.0, 3.0, 3.0, 4.0]])
+    pred_high = loaded_pipeline.predict(test_all_high)[0]
+    proba_high = loaded_pipeline.predict_proba(test_all_high)[0]
+    print(f"Test 4 HIGH situations -> Class Index: {pred_high} ({inv_exercise_mapping[pred_high]})")
+    print(f"Probabilities (LOW, MEDIUM, HIGH): {proba_high}")
+
+    # Test 2: 4 LOW situations (all 1.0) -> mean=1.0, max=1.0, min=1.0, count=4
+    test_all_low = np.array([[1.0, 1.0, 1.0, 4.0]])
+    pred_low = loaded_pipeline.predict(test_all_low)[0]
+    proba_low = loaded_pipeline.predict_proba(test_all_low)[0]
+    print(f"Test 4 LOW situations  -> Class Index: {pred_low} ({inv_exercise_mapping[pred_low]})")
+    print(f"Probabilities (LOW, MEDIUM, HIGH): {proba_low}")
     print("\nSerialization complete and verified!")
 
 

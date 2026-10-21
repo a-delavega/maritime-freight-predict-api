@@ -14,13 +14,13 @@ from enum import Enum
 class SituationDifficulty(str, Enum):
     """Difficulty level of an individual navigation situation.
 
-    The numeric values represent the encoding used by the trained model.
-    Order: HIGH(0) < LOW(1) < MEDIUM(2) — matching training label encoder.
+    Semantic ordinal encoding:
+    LOW(1) < MEDIUM(2) < HIGH(3)
     """
 
-    HIGH = "HIGH"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
 
     @property
     def encoded_value(self) -> int:
@@ -31,22 +31,24 @@ class SituationDifficulty(str, Enum):
 class ExerciseDifficulty(str, Enum):
     """Difficulty level of a full navigation exercise (prediction target)."""
 
-    HIGH = "HIGH"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
 
 
-# Encoding maps
+# Semantic encoding maps:
+# Situations: LOW=1, MEDIUM=2, HIGH=3
 _SITUATION_ENCODING: dict[SituationDifficulty, int] = {
-    SituationDifficulty.HIGH: 0,
     SituationDifficulty.LOW: 1,
     SituationDifficulty.MEDIUM: 2,
+    SituationDifficulty.HIGH: 3,
 }
 
+# Exercise output classes: Class 0=LOW, Class 1=MEDIUM, Class 2=HIGH
 EXERCISE_DECODING: dict[int, ExerciseDifficulty] = {
-    0: ExerciseDifficulty.HIGH,
-    1: ExerciseDifficulty.LOW,
-    2: ExerciseDifficulty.MEDIUM,
+    0: ExerciseDifficulty.LOW,
+    1: ExerciseDifficulty.MEDIUM,
+    2: ExerciseDifficulty.HIGH,
 }
 
 

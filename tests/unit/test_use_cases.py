@@ -60,11 +60,11 @@ class TestUseCaseHappyPath:
     def test_use_case_encoding_correct(
         self, use_case: ClassifyExerciseDifficultyUseCase, mock_classifier: MagicMock
     ):
-        """Verify encoding HIGH→0, LOW→1, MEDIUM→2 and aggregation."""
+        """Verify semantic ordinal encoding LOW→1, MEDIUM→2, HIGH→3 and aggregation."""
         situations = [
             SituationDifficulty.LOW,     # encoded: 1
             SituationDifficulty.MEDIUM,  # encoded: 2
-            SituationDifficulty.HIGH,    # encoded: 0
+            SituationDifficulty.HIGH,    # encoded: 3
         ]
 
         use_case.execute(situations)
@@ -72,10 +72,10 @@ class TestUseCaseHappyPath:
         call_args = mock_classifier.predict.call_args
         features: AggregatedFeatures = call_args[0][0]
 
-        # Encoded values: [1, 2, 0]
-        assert features.mean_difficulty == pytest.approx(1.0)
-        assert features.max_difficulty == 2.0
-        assert features.min_difficulty == 0.0
+        # Encoded values: [1, 2, 3] -> sum=6, mean=2.0, max=3, min=1, count=3
+        assert features.mean_difficulty == pytest.approx(2.0)
+        assert features.max_difficulty == 3.0
+        assert features.min_difficulty == 1.0
         assert features.situation_count == 3
 
     def test_use_case_passes_correct_features_shape(
@@ -100,15 +100,15 @@ class TestUseCaseEdgeCases:
     def test_all_same_difficulty(
         self, use_case: ClassifyExerciseDifficultyUseCase, mock_classifier: MagicMock
     ):
-        """All HIGH → mean=max=min=0.0."""
+        """All HIGH (3) → mean=max=min=3.0."""
         situations = [SituationDifficulty.HIGH] * 5
 
         use_case.execute(situations)
 
         features: AggregatedFeatures = mock_classifier.predict.call_args[0][0]
-        assert features.mean_difficulty == 0.0
-        assert features.max_difficulty == 0.0
-        assert features.min_difficulty == 0.0
+        assert features.mean_difficulty == 3.0
+        assert features.max_difficulty == 3.0
+        assert features.min_difficulty == 3.0
         assert features.situation_count == 5
 
     def test_single_situation_features(
@@ -182,11 +182,11 @@ class TestAggregatedFeatures:
 class TestSituationDifficultyEncoding:
     """Tests for the domain encoding of situation difficulty."""
 
-    def test_high_encodes_to_0(self):
-        assert SituationDifficulty.HIGH.encoded_value == 0
-
     def test_low_encodes_to_1(self):
         assert SituationDifficulty.LOW.encoded_value == 1
 
     def test_medium_encodes_to_2(self):
         assert SituationDifficulty.MEDIUM.encoded_value == 2
+
+    def test_high_encodes_to_3(self):
+        assert SituationDifficulty.HIGH.encoded_value == 3

@@ -89,11 +89,11 @@ class TestXGBoostAdapterIntegration:
         assert total == pytest.approx(1.0, abs=0.01)
 
     def test_all_high_features(self, adapter: XGBoostAdapter):
-        """All HIGH encoded (0,0,0) produces a valid prediction."""
+        """All HIGH encoded (3,3,3) produces a valid prediction."""
         features = AggregatedFeatures(
-            mean_difficulty=0.0,
-            max_difficulty=0.0,
-            min_difficulty=0.0,
+            mean_difficulty=3.0,
+            max_difficulty=3.0,
+            min_difficulty=3.0,
             situation_count=3,
         )
         result = adapter.predict(features)
