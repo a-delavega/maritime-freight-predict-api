@@ -14,6 +14,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import Response
 
+from predict.api.metrics import HTTP_REQUEST_DURATION_SECONDS
+
 logger = logging.getLogger("predict.observability")
 
 
@@ -26,8 +28,16 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 
         response = await call_next(request)
 
-        duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        duration = time.perf_counter() - start_time
+        duration_ms = round(duration * 1000, 2)
         response.headers["X-Request-ID"] = request_id
+
+        # Record Prometheus metric
+        HTTP_REQUEST_DURATION_SECONDS.labels(
+            method=request.method,
+            path=request.url.path,
+            status_code=str(response.status_code),
+        ).observe(duration)
 
         log_data = {
             "request_id": request_id,

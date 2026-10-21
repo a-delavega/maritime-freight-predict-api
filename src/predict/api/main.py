@@ -16,6 +16,7 @@ from fastapi import FastAPI
 from predict.infrastructure.model_loader import load_pipeline, ModelLoadError
 from predict.infrastructure.xgboost_adapter import XGBoostAdapter
 from predict.application.use_cases import ClassifyExerciseDifficultyUseCase
+from predict.api.metrics import MODEL_LOADED_GAUGE
 from predict.api.middleware import RequestLoggingMiddleware
 from predict.api.routes import router
 
@@ -39,16 +40,19 @@ async def lifespan(app: FastAPI):
         adapter = XGBoostAdapter(pipeline)
         use_case = ClassifyExerciseDifficultyUseCase(adapter)
         app.state.use_case = use_case
+        MODEL_LOADED_GAUGE.set(1)
         logger.info("Model loaded successfully")
     except ModelLoadError as e:
         logger.error("Failed to load model: %s", e)
         app.state.use_case = None
+        MODEL_LOADED_GAUGE.set(0)
 
     yield
 
     # Cleanup
     if hasattr(app.state, "use_case"):
         del app.state.use_case
+    MODEL_LOADED_GAUGE.set(0)
     logger.info("Application shutdown complete")
 
 
