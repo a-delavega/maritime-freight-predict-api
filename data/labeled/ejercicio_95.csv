@@ -1,0 +1,21 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+95,1,2343.36,1582.33,Cruce_er,18.05,4.58,Barco,Pesquero,N/C,2.917409532507919,Cruce_er,Barco,MEDIA,ALTA
+95,2,7603.43,131.18,Cruce_br,15.44,8.03,Contacto,Velero,Si,12.412183706888335,Cruce_br,Contacto,MEDIA,ALTA
+95,3,1107.7,349.5,Alcanzado,1.0,9.33,Contacto,Velero,No,3.7404116921441095,Alcanzado si no accion cto,Contacto que no toma accion,ALTA,ALTA
+95,4,944.79,530.03,Cruce_br,19.42,8.65,Contacto,Velero,Si,0.983776756969361,Cruce_br,Contacto,MEDIA,ALTA
+95,5,2017.72,83.54,Cruce_er_er,15.41,8.67,Niguno,Pesquero,N/C,2.5174888437145744,Cruce_er_er,Niguno,ALTA,ALTA
+95,6,1336.02,1307.19,Cruce_br_br,12.8,3.05,Niguno,Pesquero,N/C,0.5173549398777271,Cruce_br_br,Niguno,MEDIA,ALTA
+95,7,2261.68,1161.29,Cruce_er,14.54,9.94,Barco,Pesquero,N/C,3.10024679888087,Cruce_er,Barco,MEDIA,ALTA
+95,8,2820.79,859.49,Vuelta_encontrada,17.75,34.36,Ambos,Motor,N/C,1.5288247410841245,Vuelta_encontrada,Ambos,ALTA,ALTA
+95,9,1295.89,1245.93,Cruce_er_er,19.53,10.24,Niguno,Motor,N/C,0.3564320053928221,Cruce_er_er,Niguno,MEDIA,ALTA
+95,10,7436.32,1235.0,Cruce_br,18.0,1.92,Contacto,Pesquero,Si,11.684863134544011,Cruce_br,Contacto,BAJA,ALTA
+95,11,1761.7,828.17,Alcanzado,5.36,6.37,Contacto,Pesquero,No,41.22657489162138,Alcanzado si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+95,12,1735.74,1712.43,Cruce_er_er,10.51,1.48,Niguno,Pesquero,N/C,0.707016052668359,Cruce_er_er,Niguno,MEDIA,ALTA
+95,13,1557.75,1003.12,Alcanzando,10.01,5.76,Barco,Motor,N/C,8.25631917890095,Alcanzando,Barco,BAJA,ALTA
+95,14,1348.71,675.31,Alcanzado,1.0,4.0,Contacto,Velero,No,11.516101981655028,Alcanzado si no accion cto,Contacto que no toma accion,ALTA,ALTA
+95,15,2732.37,1014.67,Alcanzado,13.83,16.8,Contacto,Motor,No,25.03420949436927,Alcanzado si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+95,16,6007.01,1934.94,Alcanzado,1.5,9.73,Contacto,Velero,Si,20.461726500174247,Alcanzado,Contacto,BAJA,ALTA
+95,17,4330.79,1324.77,Cruce_er,14.2,6.89,Barco,Velero,N/C,7.212355128765928,Cruce_er,Barco,MEDIA,ALTA
+95,18,1410.16,670.14,Vuelta_encontrada,10.51,5.97,Ambos,Velero,N/C,2.231716095137878,Vuelta_encontrada,Ambos,ALTA,ALTA
+95,19,1764.89,1474.03,Vuelta_encontrada,13.05,22.57,Ambos,Motor,N/C,0.8073980884313986,Vuelta_encontrada,Ambos,MEDIA,ALTA
+95,20,2725.23,1885.22,Cruce_br_br,17.15,10.51,Niguno,Pesquero,N/C,2.121392874162872,Cruce_br_br,Niguno,MEDIA,ALTA

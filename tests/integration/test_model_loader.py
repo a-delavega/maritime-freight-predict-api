@@ -1,12 +1,19 @@
 """
-Integration tests for model_loader and XGBoostAdapter.
+Integration tests for model_loader and XGBoostAdapter using secure native JSON assets.
 """
 
+import json
 from pathlib import Path
 import pytest
+import numpy as np
 
 from predict.domain.entities import AggregatedFeatures
-from predict.infrastructure.model_loader import load_pipeline, ModelLoadError
+from predict.infrastructure.model_loader import (
+    LoadedModelAssets,
+    ModelLoadError,
+    ScalerParameters,
+    load_secure_model,
+)
 from predict.infrastructure.xgboost_adapter import XGBoostAdapter
 
 
@@ -14,61 +21,65 @@ from predict.infrastructure.xgboost_adapter import XGBoostAdapter
 
 
 class TestModelLoader:
-    """Tests for the model loading infrastructure."""
+    """Tests for the secure JSON model loading infrastructure."""
 
     def test_model_file_not_found(self, tmp_path: Path):
-        """Non-existent path raises ModelLoadError."""
-        fake_path = tmp_path / "nonexistent.joblib"
+        """Non-existent directory raises ModelLoadError."""
+        fake_dir = tmp_path / "nonexistent"
         with pytest.raises(ModelLoadError, match="not found"):
-            load_pipeline(fake_path)
+            load_secure_model(fake_dir)
 
     def test_corrupted_model_file(self, tmp_path: Path):
-        """Non-joblib file raises ModelLoadError."""
-        bad_file = tmp_path / "corrupted.joblib"
-        bad_file.write_text("this is not a joblib file")
+        """Invalid JSON / corrupt model file raises ModelLoadError."""
+        bad_dir = tmp_path / "corrupt_dir"
+        bad_dir.mkdir()
+        bad_model = bad_dir / "model.json"
+        bad_model.write_text("not a valid json booster")
+        scaler_file = bad_dir / "scaler_params.json"
+        scaler_file.write_text(json.dumps({"mean": [1, 2, 3, 4], "scale": [1, 1, 1, 1]}))
+
         with pytest.raises(ModelLoadError):
-            load_pipeline(bad_file)
+            load_secure_model(bad_dir)
 
-    def test_wrong_type_raises_error(self, tmp_path: Path):
-        """A joblib file containing a non-Pipeline object raises error."""
-        import joblib
-
-        wrong_obj = {"not": "a pipeline"}
-        path = tmp_path / "wrong_type.joblib"
-        joblib.dump(wrong_obj, path)
-        with pytest.raises(ModelLoadError, match="Expected sklearn Pipeline"):
-            load_pipeline(path)
+    def test_missing_scaler_file(self, tmp_path: Path):
+        """Directory with model.json but missing scaler_params.json raises error."""
+        test_dir = tmp_path / "missing_scaler"
+        test_dir.mkdir()
+        (test_dir / "model.json").write_text("{}")
+        with pytest.raises(ModelLoadError, match="Scaler parameters file not found"):
+            load_secure_model(test_dir)
 
     def test_loads_real_model_if_exists(self, models_dir: Path):
-        """If the real model exists, it loads successfully."""
-        model_path = models_dir / "model_pipeline.joblib"
+        """If the real native JSON assets exist, they load successfully."""
+        model_path = models_dir / "model.json"
         if not model_path.exists():
-            pytest.skip("Real model not yet serialized")
-        pipeline = load_pipeline(model_path)
-        assert hasattr(pipeline, "predict")
-        assert hasattr(pipeline, "predict_proba")
+            pytest.skip("Real native model.json not found")
+        assets = load_secure_model(models_dir)
+        assert hasattr(assets.booster, "predict")
+        assert len(assets.scaler.mean) == 4
+        assert len(assets.scaler.scale) == 4
 
 
-# --- XGBoostAdapter with real model ---
+# --- XGBoostAdapter with real native model ---
 
 
 class TestXGBoostAdapterIntegration:
-    """Integration tests using the real serialized model."""
+    """Integration tests using the native XGBoost model."""
 
     @pytest.fixture
     def adapter(self, models_dir: Path) -> XGBoostAdapter:
-        model_path = models_dir / "model_pipeline.joblib"
+        model_path = models_dir / "model.json"
         if not model_path.exists():
-            pytest.skip("Real model not yet serialized")
-        pipeline = load_pipeline(model_path)
-        return XGBoostAdapter(pipeline)
+            pytest.skip("Real native model.json not found")
+        assets = load_secure_model(models_dir)
+        return XGBoostAdapter(assets)
 
     def test_predict_returns_valid_result(self, adapter: XGBoostAdapter):
         """Adapter produces a valid ExercisePrediction."""
         features = AggregatedFeatures(
-            mean_difficulty=1.0,
-            max_difficulty=2.0,
-            min_difficulty=0.0,
+            mean_difficulty=2.0,
+            max_difficulty=3.0,
+            min_difficulty=1.0,
             situation_count=6,
         )
         result = adapter.predict(features)
@@ -77,11 +88,11 @@ class TestXGBoostAdapterIntegration:
         assert result.situation_count == 6
 
     def test_probabilities_sum_to_one(self, adapter: XGBoostAdapter):
-        """Probabilities from the real model sum to ~1.0."""
+        """Probabilities from the native model sum to ~1.0."""
         features = AggregatedFeatures(
-            mean_difficulty=1.5,
-            max_difficulty=2.0,
-            min_difficulty=1.0,
+            mean_difficulty=2.5,
+            max_difficulty=3.0,
+            min_difficulty=2.0,
             situation_count=10,
         )
         result = adapter.predict(features)
@@ -94,7 +105,7 @@ class TestXGBoostAdapterIntegration:
             mean_difficulty=3.0,
             max_difficulty=3.0,
             min_difficulty=3.0,
-            situation_count=3,
+            situation_count=4,
         )
         result = adapter.predict(features)
         assert result.difficulty.value in ("HIGH", "LOW", "MEDIUM")

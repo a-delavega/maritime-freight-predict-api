@@ -1,0 +1,17 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+53,1,7498.29,94.81,Alcanzado,1.0,5.54,Contacto,Velero,Si,48.95247035633291,Alcanzado,Contacto,MEDIA,ALTA
+53,2,1639.27,948.33,Cruce_er_er,15.59,16.73,Niguno,Motor,N/C,1.2508585683759743,Cruce_er_er,Niguno,ALTA,ALTA
+53,3,9758.82,1679.02,Cruce_br,17.81,7.15,Contacto,Pesquero,Si,14.634578486298786,Cruce_br,Contacto,BAJA,ALTA
+53,4,2230.3,1164.81,Cruce_br_br,13.51,1.89,Niguno,Pesquero,N/C,3.667618949023568,Cruce_br_br,Niguno,MEDIA,ALTA
+53,5,6746.44,1833.2,Cruce_er_er,12.17,7.84,Niguno,Motor,N/C,9.690630853919034,Cruce_er_er,Niguno,BAJA,ALTA
+53,6,1126.19,152.52,Cruce_er_er,17.42,5.3,Niguno,Pesquero,N/C,1.4728727684634886,Cruce_er_er,Niguno,ALTA,ALTA
+53,7,1058.94,486.48,Alcanzado,1.0,0.31,Contacto,Pesquero,Si,40.48937382256538,Alcanzado,Contacto,MEDIA,ALTA
+53,8,6101.14,1873.77,Cruce_er_er,11.82,8.67,Niguno,Pesquero,N/C,8.408045985241218,Cruce_er_er,Niguno,BAJA,ALTA
+53,9,5440.24,770.7,Cruce_br,14.08,5.46,Contacto,Pesquero,No,10.927512491319275,Cruce_br si no accion cto,Contacto que no toma accion,ALTA,ALTA
+53,10,6926.9,1404.0,Alcanzado,1.0,7.61,Contacto,Pesquero,No,30.38328323308724,Alcanzado si no accion cto,Contacto que no toma accion,BAJA,ALTA
+53,11,1609.96,1575.4,Alcanzando,13.35,3.63,Barco,Velero,N/C,1.01150234212808,Alcanzando,Barco,MEDIA,ALTA
+53,12,3125.42,570.12,Alcanzado,1.0,5.61,Contacto,Pesquero,Si,19.761323104541106,Alcanzado,Contacto,MEDIA,ALTA
+53,13,5460.1,43.63,Cruce_er_er,16.97,27.17,Niguno,Motor,N/C,3.713584779215888,Cruce_er_er,Niguno,ALTA,ALTA
+53,14,9485.32,1796.64,Cruce_er_er,16.86,1.94,Niguno,Velero,N/C,14.76017284198002,Cruce_er_er,Niguno,BAJA,ALTA
+53,15,3759.81,145.1,Alcanzado,12.01,15.04,Contacto,Motor,Si,34.738536908633414,Alcanzado,Contacto,MEDIA,ALTA
+53,16,4503.69,215.27,Vuelta_encontrada,12.62,21.06,Ambos,Motor,N/C,3.958171106984123,Vuelta_encontrada,Ambos,ALTA,ALTA

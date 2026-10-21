@@ -1,0 +1,16 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+93,1,5794.79,1432.02,Cruce_br_br,16.78,8.97,Niguno,Velero,N/C,6.66298835564336,Cruce_br_br,Niguno,BAJA,BAJA
+93,2,5189.29,1765.2,Vuelta_encontrada,15.97,7.92,Ambos,Velero,N/C,6.051252676875836,Vuelta_encontrada,Ambos,BAJA,BAJA
+93,3,5032.31,1715.61,Cruce_br_br,12.44,8.07,Niguno,Motor,N/C,6.97502251501151,Cruce_br_br,Niguno,BAJA,BAJA
+93,4,3067.17,1098.79,Alcanzando,17.39,8.61,Barco,Pesquero,N/C,9.663165391698977,Alcanzando,Barco,BAJA,BAJA
+93,5,9771.38,1924.34,Cruce_br_br,14.78,0.0,Niguno,Pesquero,N/C,19.19943765969355,Cruce_br_br,Niguno,BAJA,BAJA
+93,6,1036.27,940.89,Vuelta_encontrada,14.09,2.9,Ambos,Velero,N/C,0.7574814540493089,Vuelta_encontrada,Ambos,ALTA,BAJA
+93,7,3641.18,1944.37,Alcanzado,17.42,26.05,Contacto,Motor,No,10.40716468022797,Alcanzado si no accion cto,Contacto que no toma accion,MEDIA,BAJA
+93,8,1713.07,1616.23,Vuelta_encontrada,18.29,18.98,Ambos,Motor,N/C,0.4516219129934547,Vuelta_encontrada,Ambos,MEDIA,BAJA
+93,9,6345.6,319.55,Vuelta_encontrada,17.4,9.4,Ambos,Pesquero,N/C,7.007216685541534,Vuelta_encontrada,Ambos,MEDIA,BAJA
+93,10,1060.12,294.42,Cruce_br,14.62,4.73,Contacto,Velero,Si,1.913017667548976,Cruce_br,Contacto,ALTA,BAJA
+93,11,2627.5,1533.81,Alcanzando,10.63,6.54,Barco,Pesquero,N/C,15.423778644498569,Alcanzando,Barco,BAJA,BAJA
+93,12,3124.32,1542.57,Vuelta_encontrada,17.7,8.48,Ambos,Velero,N/C,3.0756134478959627,Vuelta_encontrada,Ambos,MEDIA,BAJA
+93,13,6766.86,934.37,Alcanzando,12.48,4.87,Barco,Motor,N/C,26.06973371386687,Alcanzando,Barco,BAJA,BAJA
+93,14,632.93,401.29,Vuelta_encontrada,15.99,3.33,Ambos,Pesquero,N/C,0.7507370147610852,Vuelta_encontrada,Ambos,ALTA,BAJA
+93,15,880.8,750.3,Cruce_br_br,17.69,3.26,Niguno,Velero,N/C,0.6628022323465601,Cruce_br_br,Niguno,MEDIA,BAJA

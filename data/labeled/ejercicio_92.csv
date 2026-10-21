@@ -1,0 +1,18 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+92,1,1737.66,1678.41,Cruce_br_br,12.17,8.52,Niguno,Velero,N/C,0.6607525190675199,Cruce_br_br,Niguno,MEDIA,ALTA
+92,2,664.28,148.37,Vuelta_encontrada,10.38,2.21,Ambos,Pesquero,N/C,1.523614612443997,Vuelta_encontrada,Ambos,ALTA,ALTA
+92,3,4216.15,1018.94,Cruce_er,15.66,8.35,Barco,Motor,N/C,6.213110690238872,Cruce_er,Barco,MEDIA,ALTA
+92,4,574.9,124.58,Cruce_er,10.13,7.17,Barco,Pesquero,N/C,1.1929756933089897,Cruce_er,Barco,ALTA,ALTA
+92,5,742.63,3.03,Cruce_br,18.12,2.19,Contacto,Velero,Si,1.1724505397026226,Cruce_br,Contacto,ALTA,ALTA
+92,6,738.33,168.01,Cruce_br_br,10.53,2.23,Niguno,Velero,N/C,1.670665478464495,Cruce_br_br,Niguno,ALTA,ALTA
+92,7,2069.75,966.76,Cruce_br_br,14.32,0.46,Niguno,Velero,N/C,3.6824892839990553,Cruce_br_br,Niguno,MEDIA,ALTA
+92,8,2227.98,405.48,Alcanzado,19.22,28.13,Contacto,Motor,Si,7.233216763941141,Alcanzado,Contacto,MEDIA,ALTA
+92,9,6396.06,1998.16,Alcanzado,1.0,5.19,Contacto,Velero,No,42.93783471901843,Alcanzado si no accion cto,Contacto que no toma accion,BAJA,ALTA
+92,10,866.09,431.26,Cruce_er,10.09,7.24,Barco,Velero,N/C,1.8450325989659064,Cruce_er,Barco,ALTA,ALTA
+92,11,2374.11,1256.82,Cruce_br_br,13.5,3.48,Niguno,Velero,N/C,3.5475858438053467,Cruce_br_br,Niguno,MEDIA,ALTA
+92,12,2780.37,1839.34,Cruce_br,15.96,24.43,Contacto,Motor,Si,2.222091719035612,Cruce_br,Contacto,BAJA,ALTA
+92,13,230.98,208.03,Alcanzando,6.34,0.06,Barco,Pesquero,N/C,0.4734945786078615,Alcanzando,Barco,ALTA,ALTA
+92,14,763.79,753.39,Vuelta_encontrada,11.07,2.12,Ambos,Motor,N/C,0.2824169691529908,Vuelta_encontrada,Ambos,MEDIA,ALTA
+92,15,2537.42,56.78,Cruce_br_br,18.55,12.94,Niguno,Motor,N/C,2.4360696943090043,Cruce_br_br,Niguno,ALTA,ALTA
+92,16,2131.86,1077.42,Cruce_br_br,14.61,0.17,Niguno,Velero,N/C,3.690289751826733,Cruce_br_br,Niguno,MEDIA,ALTA
+92,17,950.33,490.06,Vuelta_encontrada,13.28,4.04,Ambos,Pesquero,N/C,1.3938282415724923,Vuelta_encontrada,Ambos,ALTA,ALTA

@@ -15,7 +15,7 @@ from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import HTMLResponse
 
-from predict.infrastructure.model_loader import load_pipeline, ModelLoadError
+from predict.infrastructure.model_loader import load_secure_model, ModelLoadError
 from predict.infrastructure.xgboost_adapter import XGBoostAdapter
 from predict.application.use_cases import ClassifyExerciseDifficultyUseCase
 from predict.api.metrics import MODEL_LOADED_GAUGE
@@ -25,8 +25,8 @@ from predict.api.routes import router
 
 logger = logging.getLogger(__name__)
 
-# Default model path — can be overridden via environment variable
-DEFAULT_MODEL_PATH = Path(__file__).resolve().parent.parent.parent.parent / "models" / "model_pipeline.joblib"
+# Default model directory containing native model.json and scaler_params.json
+DEFAULT_MODELS_DIR = Path(__file__).resolve().parent.parent.parent.parent / "models"
 
 
 @asynccontextmanager
@@ -34,16 +34,16 @@ async def lifespan(app: FastAPI):
     """Application lifespan: load model at startup, cleanup at shutdown."""
     import os
 
-    model_path = os.environ.get("MODEL_PATH", str(DEFAULT_MODEL_PATH))
-    logger.info("Loading model from: %s", model_path)
+    models_dir = os.environ.get("MODELS_DIR", str(DEFAULT_MODELS_DIR))
+    logger.info("Loading secure model assets from directory: %s", models_dir)
 
     try:
-        pipeline = load_pipeline(model_path)
-        adapter = XGBoostAdapter(pipeline)
+        assets = load_secure_model(models_dir)
+        adapter = XGBoostAdapter(assets)
         use_case = ClassifyExerciseDifficultyUseCase(adapter)
         app.state.use_case = use_case
         MODEL_LOADED_GAUGE.set(1)
-        logger.info("Model loaded successfully")
+        logger.info("Model loaded successfully (native JSON, zero pickle)")
     except ModelLoadError as e:
         logger.error("Failed to load model: %s", e)
         app.state.use_case = None

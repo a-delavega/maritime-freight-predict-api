@@ -1,0 +1,18 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+49,1,206.1,123.86,Cruce_br_br,11.04,7.75,Niguno,Motor,N/C,0.2673101397149144,Cruce_br_br,Niguno,ALTA,ALTA
+49,2,1977.55,842.76,Cruce_er_er,15.29,9.76,Niguno,Velero,N/C,2.163012714364388,Cruce_er_er,Niguno,ALTA,ALTA
+49,3,8850.43,1127.16,Cruce_er,19.38,6.4,Barco,Velero,N/C,13.479966400303471,Cruce_er,Barco,BAJA,ALTA
+49,4,5152.99,1655.9,Cruce_br,13.41,0.02,Contacto,Pesquero,No,10.78183355609079,Cruce_br si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+49,5,1206.81,841.75,Alcanzando,12.66,9.55,Barco,Pesquero,N/C,8.126329679243435,Alcanzando,Barco,MEDIA,ALTA
+49,6,306.46,4.91,Alcanzando,25.97,14.97,Barco,Pesquero,N/C,0.816291186065085,Alcanzando,Barco,ALTA,ALTA
+49,7,7455.78,900.09,Vuelta_encontrada,18.37,13.74,Ambos,Motor,N/C,6.8309657950237295,Vuelta_encontrada,Ambos,MEDIA,ALTA
+49,8,1991.12,22.08,Cruce_er_er,17.15,4.45,Niguno,Velero,N/C,2.734736712496608,Cruce_er_er,Niguno,ALTA,ALTA
+49,9,6860.44,1014.23,Cruce_br_br,19.54,34.74,Niguno,Motor,N/C,3.727814333416887,Cruce_br_br,Niguno,BAJA,ALTA
+49,10,788.03,281.35,Alcanzado,1.0,6.37,Contacto,Pesquero,Si,4.058343531700104,Alcanzado,Contacto,ALTA,ALTA
+49,11,1299.17,1258.72,Cruce_br_br,12.24,4.08,Niguno,Velero,N/C,0.5939508404833714,Cruce_br_br,Niguno,MEDIA,ALTA
+49,12,1730.05,1497.4,Cruce_er_er,14.74,8.72,Niguno,Velero,N/C,1.0988273027691215,Cruce_er_er,Niguno,MEDIA,ALTA
+49,13,495.84,351.77,Alcanzando,11.83,2.52,Barco,Motor,N/C,1.1116995872380844,Alcanzando,Barco,ALTA,ALTA
+49,14,5242.01,1966.96,Cruce_br,17.59,4.2,Contacto,Velero,No,8.382972446910498,Cruce_br si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+49,15,3458.31,1081.74,Cruce_er_er,19.84,7.18,Niguno,Velero,N/C,3.674979140409638,Cruce_er_er,Niguno,MEDIA,ALTA
+49,16,1618.86,1489.78,Cruce_br,11.37,2.62,Contacto,Velero,Si,1.657560921798658,Cruce_br,Contacto,MEDIA,ALTA
+49,17,7265.01,315.09,Alcanzado,1.0,4.26,Contacto,Velero,Si,65.92752088460855,Alcanzado,Contacto,MEDIA,ALTA

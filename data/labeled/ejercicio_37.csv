@@ -1,0 +1,20 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+37,1,6627.18,297.58,Alcanzando,6.25,1.82,Barco,Velero,N/C,44.27460558970567,Alcanzando,Barco,MEDIA,ALTA
+37,2,8800.77,1348.13,Cruce_br_br,13.36,13.22,Niguno,Motor,N/C,9.725585014103022,Cruce_br_br,Niguno,BAJA,ALTA
+37,3,4520.06,233.0,Cruce_br_br,14.69,5.98,Niguno,Velero,N/C,6.621386528393616,Cruce_br_br,Niguno,MEDIA,ALTA
+37,4,4917.84,826.05,Cruce_br,11.18,0.13,Contacto,Velero,Si,12.808998143572284,Cruce_br,Contacto,MEDIA,ALTA
+37,5,1827.01,1000.4,Alcanzado,17.22,21.79,Contacto,Motor,No,9.919548106833998,Alcanzado si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+37,6,4192.07,1637.45,Vuelta_encontrada,17.51,1.6,Ambos,Pesquero,N/C,5.984425021506509,Vuelta_encontrada,Ambos,MEDIA,ALTA
+37,7,425.44,390.52,Cruce_br_br,16.19,3.58,Niguno,Pesquero,N/C,0.2549915216303289,Cruce_br_br,Niguno,ALTA,ALTA
+37,8,3021.22,1840.88,Cruce_er,18.91,9.78,Barco,Pesquero,N/C,3.719499666624956,Cruce_er,Barco,MEDIA,ALTA
+37,9,582.94,577.5,Cruce_br,13.86,8.44,Contacto,Pesquero,Si,0.1320329923758829,Cruce_br,Contacto,MEDIA,ALTA
+37,10,7211.73,1634.55,Cruce_br,11.91,0.18,Contacto,Motor,Si,17.43995721236644,Cruce_br,Contacto,BAJA,ALTA
+37,11,1908.64,1222.45,Vuelta_encontrada,17.5,34.98,Ambos,Motor,N/C,0.8280472577604827,Vuelta_encontrada,Ambos,MEDIA,ALTA
+37,12,3249.32,1779.6,Vuelta_encontrada,13.42,3.42,Ambos,Velero,N/C,4.78386463583996,Vuelta_encontrada,Ambos,MEDIA,ALTA
+37,13,1717.64,920.06,Cruce_er_er,12.31,13.43,Niguno,Motor,N/C,1.6739429604170415,Cruce_er_er,Niguno,MEDIA,ALTA
+37,14,734.44,18.45,Vuelta_encontrada,13.52,0.11,Ambos,Velero,N/C,1.5959414819303697,Vuelta_encontrada,Ambos,ALTA,ALTA
+37,15,2472.51,439.16,Alcanzado,16.8,20.48,Contacto,Motor,No,18.590231121625507,Alcanzado si no accion cto,Contacto que no toma accion,ALTA,ALTA
+37,16,7107.26,223.55,Alcanzando,8.57,3.98,Barco,Velero,N/C,45.68020178928596,Alcanzando,Barco,MEDIA,ALTA
+37,17,2661.48,113.79,Alcanzando,26.6,12.58,Barco,Pesquero,N/C,5.615131393464529,Alcanzando,Barco,ALTA,ALTA
+37,18,7860.14,1812.69,Cruce_er_er,19.16,2.84,Niguno,Velero,N/C,10.307545797600811,Cruce_er_er,Niguno,BAJA,ALTA
+37,19,1890.47,862.38,Cruce_er,11.42,7.66,Barco,Pesquero,N/C,4.217877512713547,Cruce_er,Barco,ALTA,ALTA

@@ -1,0 +1,13 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+68,1,8941.24,356.75,Alcanzando,17.5,9.33,Barco,Velero,N/C,32.341862136878746,Alcanzando,Barco,MEDIA,ALTA
+68,2,9957.17,1625.96,Vuelta_encontrada,18.95,33.03,Ambos,Motor,N/C,5.60151055170107,Vuelta_encontrada,Ambos,BAJA,ALTA
+68,3,7203.23,163.97,Cruce_br,14.07,1.85,Contacto,Pesquero,No,15.61947315940862,Cruce_br si no accion cto,Contacto que no toma accion,ALTA,ALTA
+68,4,8304.7,1521.63,Cruce_br_br,16.83,1.39,Niguno,Pesquero,N/C,13.281699825282365,Cruce_br_br,Niguno,BAJA,ALTA
+68,5,675.45,597.29,Alcanzando,19.5,9.68,Barco,Motor,N/C,0.95013931546791,Alcanzando,Barco,MEDIA,ALTA
+68,6,6543.66,1079.87,Vuelta_encontrada,11.71,29.73,Ambos,Motor,N/C,4.615643270914126,Vuelta_encontrada,Ambos,MEDIA,ALTA
+68,7,1121.53,1100.02,Cruce_er,14.34,9.9,Barco,Velero,N/C,0.4458262777215114,Cruce_er,Barco,MEDIA,ALTA
+68,8,998.78,304.36,Cruce_er_er,13.06,27.01,Niguno,Motor,N/C,0.7059352677884099,Cruce_er_er,Niguno,ALTA,ALTA
+68,9,4160.95,249.44,Alcanzado,15.2,22.62,Contacto,Motor,No,16.47635113665475,Alcanzado si no accion cto,Contacto que no toma accion,ALTA,ALTA
+68,10,5561.11,120.09,Cruce_br,15.02,0.21,Contacto,Velero,No,10.97524023622864,Cruce_br si no accion cto,Contacto que no toma accion,ALTA,ALTA
+68,11,705.39,119.58,Cruce_br_br,13.42,14.35,Niguno,Pesquero,N/C,0.7429059565232922,Cruce_br_br,Niguno,ALTA,ALTA
+68,12,909.46,902.29,Alcanzado,12.08,20.67,Contacto,Motor,No,0.3923609068875909,Alcanzado si no accion cto,Contacto que no toma accion,ALTA,ALTA

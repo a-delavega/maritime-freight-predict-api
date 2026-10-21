@@ -1,0 +1,17 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+64,1,1039.2,758.2,Alcanzado,10.66,13.37,Contacto,Motor,No,7.74861183883274,Alcanzado si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+64,2,609.45,609.37,Cruce_br_br,12.92,5.35,Niguno,Velero,N/C,0.0154672524033516,Cruce_br_br,Niguno,MEDIA,ALTA
+64,3,627.87,474.33,Cruce_br,18.44,7.1,Contacto,Velero,Si,0.5663533002629042,Cruce_br,Contacto,ALTA,ALTA
+64,4,1215.79,405.66,Cruce_br_br,16.68,9.49,Niguno,Velero,N/C,1.3173904774329777,Cruce_br_br,Niguno,ALTA,ALTA
+64,5,5848.97,1403.88,Cruce_br,19.64,8.88,Contacto,Velero,No,8.17964960057711,Cruce_br si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+64,6,6326.54,1913.86,Alcanzando,13.22,2.27,Barco,Velero,N/C,16.31641565909577,Alcanzando,Barco,BAJA,ALTA
+64,7,7897.7,1488.44,Cruce_br,12.95,13.24,Contacto,Motor,Si,13.263215468057126,Cruce_br,Contacto,BAJA,ALTA
+64,8,4730.22,1489.71,Cruce_br_br,14.03,8.59,Niguno,Velero,N/C,6.054252217803983,Cruce_br_br,Niguno,BAJA,ALTA
+64,9,6247.47,750.78,Cruce_br_br,18.0,17.4,Niguno,Motor,N/C,5.330597920956908,Cruce_br_br,Niguno,MEDIA,ALTA
+64,10,4244.26,576.85,Cruce_er_er,15.79,10.8,Niguno,Motor,N/C,4.743979641641782,Cruce_er_er,Niguno,MEDIA,ALTA
+64,11,3097.14,141.23,Alcanzando,18.87,10.14,Barco,Motor,N/C,10.491751984802036,Alcanzando,Barco,MEDIA,ALTA
+64,12,309.79,22.35,Cruce_er_er,10.46,31.12,Niguno,Motor,N/C,0.2225718647143476,Cruce_er_er,Niguno,ALTA,ALTA
+64,13,296.06,140.63,Vuelta_encontrada,12.75,5.83,Ambos,Velero,N/C,0.4154955678271357,Vuelta_encontrada,Ambos,ALTA,ALTA
+64,14,825.01,696.15,Cruce_br,14.57,10.82,Contacto,Pesquero,Si,0.6381053311316123,Cruce_br,Contacto,MEDIA,ALTA
+64,15,4550.29,1559.37,Cruce_br,16.25,3.39,Contacto,Pesquero,No,7.497717729167337,Cruce_br si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+64,16,7019.22,1649.82,Cruce_er_er,19.54,32.69,Niguno,Motor,N/C,3.963878186011285,Cruce_er_er,Niguno,MEDIA,ALTA

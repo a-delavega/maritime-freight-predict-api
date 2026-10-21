@@ -2,13 +2,14 @@
 Infrastructure: XGBoost adapter.
 
 Concrete implementation of DifficultyClassifierPort that uses
-a serialized sklearn Pipeline (StandardScaler + XGBClassifier).
+a securely loaded native XGBoost Booster and explicit standard scaler.
+Zero joblib / pickle dependency.
 """
 
 from __future__ import annotations
 
 import numpy as np
-from sklearn.pipeline import Pipeline
+import xgboost as xgb
 
 from predict.domain.entities import (
     AggregatedFeatures,
@@ -17,6 +18,7 @@ from predict.domain.entities import (
     ExercisePrediction,
 )
 from predict.domain.ports import DifficultyClassifierPort
+from predict.infrastructure.model_loader import LoadedModelAssets
 
 
 class PredictionError(Exception):
@@ -26,15 +28,14 @@ class PredictionError(Exception):
 
 
 class XGBoostAdapter(DifficultyClassifierPort):
-    """Adapter that wraps a sklearn Pipeline for exercise difficulty prediction.
+    """Adapter wrapping a native XGBoost Booster and explicit ScalerParameters.
 
-    The Pipeline must contain a StandardScaler and XGBClassifier,
-    expecting 4 features: [mean_difficulty, max_difficulty,
-    min_difficulty, situation_count].
+    Features expected: [mean_difficulty, max_difficulty, min_difficulty, situation_count].
     """
 
-    def __init__(self, pipeline: Pipeline) -> None:
-        self._pipeline = pipeline
+    def __init__(self, assets: LoadedModelAssets) -> None:
+        self._booster = assets.booster
+        self._scaler = assets.scaler
 
     def predict(self, features: AggregatedFeatures) -> ExercisePrediction:
         """Predict exercise difficulty from aggregated features.
@@ -49,11 +50,20 @@ class XGBoostAdapter(DifficultyClassifierPort):
             PredictionError: If the model fails to produce a prediction.
         """
         try:
-            X = np.array([features.to_feature_list()])
-            probabilities = self._pipeline.predict_proba(X)[0]
+            # 1. Convert domain features to raw array
+            raw_features = np.array([features.to_feature_list()], dtype=np.float32)
+
+            # 2. Standard scale strictly without external pickle/pipeline dependencies
+            scaled_features = self._scaler.transform(raw_features)
+
+            # 3. Predict probabilities using native DMatrix
+            dmatrix = xgb.DMatrix(scaled_features)
+            raw_probs = self._booster.predict(dmatrix)[0]
+
+            # In multi:softprob, raw_probs is an array of shape (num_classes,)
+            probabilities = np.array(raw_probs, dtype=np.float32)
             predicted_class_idx = int(np.argmax(probabilities))
 
-            # Decode class index to ExerciseDifficulty enum
             difficulty = EXERCISE_DECODING.get(predicted_class_idx)
             if difficulty is None:
                 raise PredictionError(

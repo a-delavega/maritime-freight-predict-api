@@ -1,0 +1,17 @@
+Ejercicio,Situacion_n,DistanciaInicioRiiesgo,DCPA_yds,Situacion,VelNudos,VelNudosContacto,Responsables,Contacto,AccionContacto,TCPA,Situacion_evaluacion,Responsable_evaluacion,DificultadSituacion,DificultadEjercicio
+84,1,1781.83,37.52,Alcanzado,13.1,20.87,Contacto,Motor,No,6.72333096858143,Alcanzado si no accion cto,Contacto que no toma accion,ALTA,ALTA
+84,2,823.54,187.02,Alcanzando,19.19,7.94,Barco,Pesquero,N/C,2.105276821456153,Alcanzando,Barco,ALTA,ALTA
+84,3,6595.2,526.08,Alcanzando,22.47,7.6,Barco,Pesquero,N/C,13.088418009258756,Alcanzando,Barco,MEDIA,ALTA
+84,4,2587.44,467.63,Cruce_er,15.86,2.07,Barco,Velero,N/C,4.555769745039234,Cruce_er,Barco,ALTA,ALTA
+84,5,5014.43,524.2,Vuelta_encontrada,14.65,6.66,Ambos,Velero,N/C,6.935125179467033,Vuelta_encontrada,Ambos,MEDIA,ALTA
+84,6,2002.24,1922.91,Alcanzado,11.46,13.43,Contacto,Motor,No,8.059109639671313,Alcanzado si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+84,7,9301.74,1115.64,Vuelta_encontrada,19.27,8.78,Ambos,Pesquero,N/C,9.75858223735127,Vuelta_encontrada,Ambos,BAJA,ALTA
+84,8,8915.44,605.85,Cruce_er,17.12,13.26,Barco,Motor,N/C,12.22782011522586,Cruce_er,Barco,MEDIA,ALTA
+84,9,8310.75,631.01,Cruce_br,10.37,9.6,Contacto,Velero,Si,18.02070449160669,Cruce_br,Contacto,BAJA,ALTA
+84,10,2855.16,634.87,Alcanzado,1.0,0.42,Contacto,Pesquero,No,141.8788261450439,Alcanzado si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+84,11,5613.34,495.34,Alcanzado,1.0,9.95,Contacto,Pesquero,Si,18.506013135633367,Alcanzado,Contacto,MEDIA,ALTA
+84,12,1650.27,1642.08,Vuelta_encontrada,12.41,33.05,Ambos,Motor,N/C,0.1070410013565812,Vuelta_encontrada,Ambos,MEDIA,ALTA
+84,13,2173.09,1868.67,Cruce_br,16.87,9.11,Contacto,Velero,No,1.982176722463544,Cruce_br si no accion cto,Contacto que no toma accion,MEDIA,ALTA
+84,14,2850.88,924.68,Alcanzando,16.97,5.75,Barco,Pesquero,N/C,7.122388541000643,Alcanzando,Barco,MEDIA,ALTA
+84,15,685.43,446.75,Alcanzado,1.0,0.87,Contacto,Pesquero,Si,106.1622967448063,Alcanzado,Contacto,MEDIA,ALTA
+84,16,1981.43,912.58,Alcanzado,1.0,7.73,Contacto,Velero,No,7.74680985301274,Alcanzado si no accion cto,Contacto que no toma accion,ALTA,ALTA

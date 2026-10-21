@@ -130,10 +130,11 @@ def save_assets(model: XGBClassifier, scaler: StandardScaler) -> None:
     """Save XGBoost native model (.json) and scaler/metadata to model_assets/."""
     ASSETS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Save native XGBoost model to JSON (avoids pickle / joblib security risks)
+    # Save native XGBoost Booster directly to JSON (bypasses sklearn wrapper bug, zero pickle)
     model_json_path = ASSETS_DIR / "model.json"
-    model.save_model(str(model_json_path))
-    print(f"Saved native XGBoost model to: {model_json_path}")
+    booster = model.get_booster()
+    booster.save_model(str(model_json_path))
+    print(f"Saved native XGBoost Booster to: {model_json_path}")
 
     # Save scaler parameters as pure JSON to eliminate joblib/pickle completely
     scaler_metadata = {
