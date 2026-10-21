@@ -16,6 +16,7 @@ from fastapi import FastAPI
 from predict.infrastructure.model_loader import load_pipeline, ModelLoadError
 from predict.infrastructure.xgboost_adapter import XGBoostAdapter
 from predict.application.use_cases import ClassifyExerciseDifficultyUseCase
+from predict.api.middleware import RequestLoggingMiddleware
 from predict.api.routes import router
 
 
@@ -60,5 +61,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(router)
