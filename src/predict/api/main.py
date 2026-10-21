@@ -55,8 +55,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Maritime Navigation Predict API",
     description=(
-        "Microservicio de inferencia para clasificación de dificultad "
-        "de ejercicios de navegación marítima (FórmaTECH)"
+        "Production-ready inference microservice for maritime navigation "
+        "exercise difficulty classification"
     ),
     version="1.0.0",
     lifespan=lifespan,

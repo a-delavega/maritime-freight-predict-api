@@ -1,7 +1,7 @@
 """
 Model serialization script.
 
-Trains the XGBClassifier using FórmaTECH labeled data
+Trains the XGBClassifier using labeled maritime simulation data
 and serializes the complete pipeline (StandardScaler + XGBClassifier) via joblib.
 
 Usage:

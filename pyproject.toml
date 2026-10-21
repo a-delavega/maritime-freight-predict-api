@@ -1,7 +1,7 @@
 [project]
 name = "maritime-predict-api"
 version = "1.0.0"
-description = "Microservicio de inferencia para clasificación de dificultad de ejercicios de navegación marítima (FórmaTECH)"
+description = "Production-ready inference microservice for maritime navigation exercise difficulty classification"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0,<1.0.0",
