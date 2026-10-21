@@ -99,6 +99,8 @@ uvicorn predict.api.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 * Interactive Swagger Documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* Visual Telemetry Dashboard: [http://127.0.0.1:8000/dashboard](http://127.0.0.1:8000/dashboard)
+* Prometheus Metrics Scraping: [http://127.0.0.1:8000/metrics](http://127.0.0.1:8000/metrics)
 * Health Check Endpoint: [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
 
 ### 3. Run Client Demo
