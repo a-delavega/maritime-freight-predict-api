@@ -30,7 +30,13 @@ MODEL_VERSION = "1.0.0"
 router = APIRouter()
 
 
-@router.get("/health", response_model=HealthResponse)
+@router.get(
+    "/health",
+    response_model=HealthResponse,
+    tags=["System & Observability"],
+    summary="Health check & model status probe",
+    description="Returns the operational status of the service and validates whether the XGBoost model pipeline is loaded in memory.",
+)
 def health_check(
     use_case: ClassifyExerciseDifficultyUseCase | None = Depends(get_use_case),
 ) -> HealthResponse:
@@ -41,7 +47,13 @@ def health_check(
     )
 
 
-@router.post("/predict", response_model=PredictionResponse)
+@router.post(
+    "/predict",
+    response_model=PredictionResponse,
+    tags=["Inference Services"],
+    summary="Classify single maritime exercise",
+    description="Accepts an ordered sequence of situation encounter risk levels (`LOW`, `MEDIUM`, `HIGH`), encodes and aggregates them into key features, and executes CPU-bound inference via the trained XGBoost model.",
+)
 def predict(
     request: PredictionRequest,
     use_case: ClassifyExerciseDifficultyUseCase | None = Depends(get_use_case),
@@ -86,7 +98,13 @@ def predict(
     )
 
 
-@router.post("/predict/batch", response_model=BatchPredictionResponse)
+@router.post(
+    "/predict/batch",
+    response_model=BatchPredictionResponse,
+    tags=["Inference Services"],
+    summary="Classify batch of exercises",
+    description="High-throughput batch endpoint that processes multiple maritime exercises in a single payload.",
+)
 def predict_batch(
     request: BatchPredictionRequest,
     use_case: ClassifyExerciseDifficultyUseCase | None = Depends(get_use_case),
@@ -135,14 +153,26 @@ def predict_batch(
     )
 
 
-@router.get("/metrics", response_class=Response)
+@router.get(
+    "/metrics",
+    response_class=Response,
+    tags=["System & Observability"],
+    summary="Prometheus metrics exposition",
+    description="Exposes real-time Prometheus telemetry metrics (counters, latency histograms, and health gauges) formatted for standard scraping.",
+)
 def metrics() -> Response:
     """Prometheus exposition endpoint for scraping model and API telemetry."""
     data = get_metrics_snapshot()
     return Response(content=data, media_type="text/plain; version=0.0.4; charset=utf-8")
 
 
-@router.get("/dashboard", response_class=HTMLResponse)
+@router.get(
+    "/dashboard",
+    response_class=HTMLResponse,
+    tags=["System & Observability"],
+    summary="Interactive visual telemetry dashboard",
+    description="Live web interface with Chart.js visualizations tracking inference distribution, throughput, and system health.",
+)
 def dashboard() -> HTMLResponse:
     """Visual telemetry dashboard displaying real-time metrics and charts."""
     html_content = """<!DOCTYPE html>
