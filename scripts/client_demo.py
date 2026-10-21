@@ -9,8 +9,8 @@ Shows how an external client consumes the REST API:
 """
 
 import json
-import requests
 import sys
+import httpx
 
 BASE_URL = "http://127.0.0.1:8000"
 
@@ -20,12 +20,14 @@ def main():
     print("Maritime Navigation Predict API - Client Demonstration")
     print("=" * 60)
 
+    client = httpx.Client(base_url=BASE_URL, timeout=10.0)
+
     # 1. Health Check
-    print("\n[1] Checking API Health...")
+    print("\n[1] Checking API Health (/health)...")
     try:
-        health_resp = requests.get(f"{BASE_URL}/health", timeout=3)
-        print(f"Status: {health_resp.status_code}")
-        print(f"Payload: {health_resp.json()}")
+        health_resp = client.get("/health")
+        print(f"HTTP Status: {health_resp.status_code}")
+        print(f"Payload: {json.dumps(health_resp.json(), indent=2)}")
         if health_resp.status_code != 200 or not health_resp.json().get("model_loaded"):
             print("Server is not healthy or model is not loaded!")
             sys.exit(1)
@@ -39,10 +41,10 @@ def main():
     single_payload = {
         "situations": ["LOW", "MEDIUM", "HIGH", "MEDIUM", "MEDIUM", "LOW"]
     }
-    print(f"Request: {json.dumps(single_payload)}")
-    pred_resp = requests.post(f"{BASE_URL}/predict", json=single_payload, timeout=5)
-    print(f"Status: {pred_resp.status_code}")
-    print(f"Response: {json.dumps(pred_resp.json(), indent=2)}")
+    print(f"Request Payload:\n{json.dumps(single_payload, indent=2)}")
+    pred_resp = client.post("/predict", json=single_payload)
+    print(f"HTTP Status: {pred_resp.status_code}")
+    print(f"Prediction Result:\n{json.dumps(pred_resp.json(), indent=2)}")
 
     # 3. Batch Prediction
     print("\n[3] Requesting Batch Prediction (/predict/batch)...")
@@ -53,10 +55,10 @@ def main():
             "exercise_103": ["LOW", "MEDIUM", "HIGH", "LOW"]
         }
     }
-    print(f"Request: {json.dumps(batch_payload, indent=2)}")
-    batch_resp = requests.post(f"{BASE_URL}/predict/batch", json=batch_payload, timeout=5)
-    print(f"Status: {batch_resp.status_code}")
-    print(f"Response: {json.dumps(batch_resp.json(), indent=2)}")
+    print(f"Batch Request Payload:\n{json.dumps(batch_payload, indent=2)}")
+    batch_resp = client.post("/predict/batch", json=batch_payload)
+    print(f"HTTP Status: {batch_resp.status_code}")
+    print(f"Batch Prediction Result:\n{json.dumps(batch_resp.json(), indent=2)}")
 
     print("\n" + "=" * 60)
     print("Client demonstration finished successfully!")
