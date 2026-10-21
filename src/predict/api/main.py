@@ -74,8 +74,9 @@ Welcome to the **Maritime Predict API documentation**. This service hosts an opt
 * **Strict Type Safety**: Endpoints validated using Pydantic v2 schemas and contract-driven schemas.
 
 ---
-* **Live Telemetry Dashboard**: [View Metrics Dashboard](/dashboard)
-* **Prometheus Exposition Endpoint**: [View Prometheus Text Metrics](/metrics)
+* **🎨 Interactive Visual Studio (Dropdowns)**: [Open Prediction Playground](/playground)
+* **📈 Live Telemetry Dashboard**: [View Metrics Dashboard](/dashboard)
+* **⚙️ Prometheus Exposition Endpoint**: [View Prometheus Text Metrics](/metrics)
     """,
     version="1.0.0",
     docs_url=None,  # Custom modern styled docs served below

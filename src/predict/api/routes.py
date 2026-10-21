@@ -14,6 +14,7 @@ from predict.api.metrics import (
     PREDICTIONS_TOTAL,
     get_metrics_snapshot,
 )
+from predict.api.playground import PLAYGROUND_HTML
 from predict.api.schemas import (
     HealthResponse,
     PredictionRequest,
@@ -164,6 +165,18 @@ def metrics() -> Response:
     """Prometheus exposition endpoint for scraping model and API telemetry."""
     data = get_metrics_snapshot()
     return Response(content=data, media_type="text/plain; version=0.0.4; charset=utf-8")
+
+
+@router.get(
+    "/playground",
+    response_class=HTMLResponse,
+    tags=["Inference Services"],
+    summary="Interactive visual prediction studio",
+    description="Interactive UI with dynamic dropdown menus to configure situations visually and preview instant XGBoost classification.",
+)
+def playground() -> HTMLResponse:
+    """Renders the interactive visual studio with dropdowns for exercise situations."""
+    return HTMLResponse(content=PLAYGROUND_HTML)
 
 
 @router.get(
