@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚢 Maritime Freight & Navigation Predict API
+# Maritime Freight & Navigation Predict API
 
 [![CI/CD Pipeline](https://github.com/a-delavega/maritime-freight-predict-api/actions/workflows/ci.yml/badge.svg)](https://github.com/a-delavega/maritime-freight-predict-api/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
@@ -10,110 +10,113 @@
 [![Tests](https://img.shields.io/badge/tests-45%20passed-brightgreen.svg?logo=pytest&logoColor=white)](https://docs.pytest.org/)
 [![Coverage](https://img.shields.io/badge/coverage-93%25-success.svg)](https://github.com/a-delavega/maritime-freight-predict-api)
 [![Prometheus](https://img.shields.io/badge/Prometheus-Metrics-E6522C.svg?logo=prometheus&logoColor=white)](http://127.0.0.1:8000/metrics)
-[![Architecture](https://img.shields.io/badge/architecture-Clean%20%2F%20Hexagonal-orange.svg)](#-clean-architecture)
+[![Architecture](https://img.shields.io/badge/architecture-Clean%20%2F%20Hexagonal-orange.svg)](#architecture)
 
-**A high-throughput, production-grade ML inference microservice designed following Big Tech engineering standards (Clean Architecture, Strict TDD, Multi-stage Hardened Docker, Semantic Ordinal ML Pipeline, and Full Observability).**
+An ML inference service that classifies the difficulty of a maritime navigation exercise (`LOW`, `MEDIUM` or `HIGH`) from the risk levels of the situations it contains. Built with FastAPI, XGBoost and a Clean Architecture layout.
 
-[Explore API Docs](#-api-documentation--endpoints) • [Interactive Studio](#-interactive-prediction-studio) • [Quickstart](#-quickstart) • [Architecture](#-clean-architecture) • [Engineering Decisions](#-key-engineering-decisions--trade-offs)
+[API](#api) • [Playground](#playground) • [Quickstart](#quickstart) • [Architecture](#architecture) • [Design decisions](#design-decisions)
 
 ---
 
 </div>
 
-## 📌 Executive Summary
+## Overview
 
-Modern machine learning platforms demand rigorous software engineering beyond exploratory scripts. **Maritime Predict API** serves an optimized **XGBoost classification pipeline** (`StandardScaler + XGBClassifier`) to evaluate maritime risk encounters and classify overall exercise complexity (`LOW`, `MEDIUM`, `HIGH`).
+This project wraps an XGBoost classification pipeline (`StandardScaler + XGBClassifier`) in a small web service. You send it the list of situation risk levels for an exercise, and it returns the predicted difficulty along with the probability of each class.
 
-Built from the ground up prioritizing **decoupling, determinism, security, and low-latency inference**:
-- **Clean Architecture & DIP**: Zero framework coupling in the domain layer; model drivers are interchangeable via adapter ports.
-- **Semantic Ordinal ML Scaling**: Enforces physical risk monotonicity (`LOW: 1.0 < MEDIUM: 2.0 < HIGH: 3.0`) eliminating alphabetical encoding artifacts.
-- **Fail-Safe Concurrency**: CPU-bound inference run off-loop via synchronous threadpool offloading, keeping the async event loop non-blocking.
-- **Defensive API Contracts**: Pydantic v2 schemas validating boundaries and rejecting malformed inputs before reaching memory.
-- **Full Observability & Interactive Studio**: Built-in Prometheus `/metrics` exposition, live Chart.js `/dashboard`, and an interactive visual `/playground` with dynamic dropdowns.
-- **Production Hardened**: Containerized under an unprivileged `appuser` (non-root), health check probes, and structured JSON telemetry.
+I wanted it to be more than a notebook behind an endpoint, so most of the effort went into the engineering around the model:
+
+- **Clean Architecture.** The domain layer has no dependency on FastAPI or XGBoost. The model is reached through a port, so the XGBoost adapter can be swapped without touching the use case.
+- **Ordinal encoding.** Risk levels are mapped as `LOW = 1.0 < MEDIUM = 2.0 < HIGH = 3.0`. A plain `LabelEncoder` sorts alphabetically and gives `HIGH = 0`, which breaks aggregates like mean, max and min as a measure of risk.
+- **Non-blocking inference.** Prediction is CPU-bound, so the endpoints are plain `def` handlers. FastAPI runs them in a worker thread and the event loop stays free.
+- **Input validation.** Pydantic v2 schemas reject malformed requests at the API boundary, before they get anywhere near the model.
+- **Observability.** Prometheus metrics at `/metrics`, a live Chart.js dashboard at `/dashboard`, and JSON request logs.
+- **Container.** Multi-stage Docker build, runs as a non-root user, with a health check.
+
+There is also a small interactive UI at `/playground` for trying the model without writing JSON by hand.
 
 ---
 
-## 🏛 Clean Architecture
+## Architecture
 
-The codebase strictly adheres to the **Dependency Inversion Principle (DIP)**. Dependencies point inward—domain logic is fully isolated from external frameworks like FastAPI or XGBoost.
+Dependencies point inward: the domain knows nothing about the frameworks around it.
 
 ```
 ┌────────────────────────────────────────────────────────┐
 │                      API Layer                         │
-│   FastAPI Routes · Pydantic v2 Schemas · Middleware    │
-│   Studio Playground · Live Dashboard · Prometheus      │
+│   FastAPI routes · Pydantic v2 schemas · middleware    │
+│   Playground · Dashboard · Prometheus                  │
 └──────────────────────────┬─────────────────────────────┘
                            │ (HTTP / DTO)
 ┌──────────────────────────▼─────────────────────────────┐
 │                  Application Layer                     │
 │        ClassifyExerciseDifficultyUseCase               │
 └──────────────────────────┬─────────────────────────────┘
-                           │ (Calls Port Interface)
+                           │ (calls port interface)
 ┌──────────────────────────▼─────────────────────────────┐
 │                    Domain Layer                        │
 │   Entities · AggregatedFeatures · ClassifierPort (ABC) │
 └──────────────────────────▲─────────────────────────────┘
-                           │ (Implements Port)
+                           │ (implements port)
 ┌──────────────────────────┴─────────────────────────────┐
 │                 Infrastructure Layer                   │
-│         XGBoostAdapter · Joblib Model Loader           │
+│         XGBoostAdapter · joblib model loader           │
 └────────────────────────────────────────────────────────┘
 ```
 
+Project layout:
+
 ```
 maritime-freight-predict-api/
-├── .github/workflows/          # CI/CD Automated Test Pipeline (GitHub Actions)
-├── models/                     # Serialized Model Artifacts & Metadata (joblib / json)
-├── scripts/                    # Model serialization & client demo scripts
+├── .github/workflows/          # CI pipeline (GitHub Actions)
+├── models/                     # Serialized model and metadata (joblib / json)
+├── scripts/                    # Model serialization and client demo scripts
 ├── src/predict/
-│   ├── domain/                 # Pure domain entities, value objects, and ports
-│   ├── application/            # Orchestration use cases
-│   ├── infrastructure/         # XGBoost adapters and joblib loaders
-│   └── api/                    # FastAPI routes, schemas, middleware, playground, metrics
+│   ├── domain/                 # Entities, value objects and ports
+│   ├── application/            # Use cases
+│   ├── infrastructure/         # XGBoost adapter and joblib loader
+│   └── api/                    # Routes, schemas, middleware, playground, metrics
 └── tests/
-    ├── unit/                   # Schema validation & Use case unit tests
-    └── integration/            # Model loader & End-to-end API integration tests
+    ├── unit/                   # Schema validation and use case tests
+    └── integration/            # Model loader and end-to-end API tests
 ```
 
 ---
 
-## ⚡ Quickstart
+## Quickstart
 
-### 1. Prerequisites & Virtual Environment
+### 1. Install
 
 ```bash
-# Clone the repository
 git clone https://github.com/a-delavega/maritime-freight-predict-api.git
 cd maritime-freight-predict-api
 
-# Create and activate virtual environment
 python -m venv .venv
 source .venv/bin/activate       # Linux/macOS
 # .\.venv\Scripts\Activate.ps1  # Windows PowerShell
 
-# Install package with developer dependencies
+# Install the package with dev dependencies
 pip install -e ".[dev]"
 ```
 
-### 2. Launch Local Server
+### 2. Run the server
 
 ```bash
 uvicorn predict.api.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-| Service | URL | Description |
+| Service | URL | What it is |
 |---|---|---|
-| **🎨 Interactive Studio** | [http://127.0.0.1:8000/playground](http://127.0.0.1:8000/playground) | Visual prediction UI with dynamic dropdowns & live charts |
-| **📑 OpenAPI Swagger Docs** | [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) | Customized dark developer portal documentation |
-| **📖 ReDoc Documentation** | [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) | Alternative clean API specification portal |
-| **📊 Visual Telemetry Dashboard** | [http://127.0.0.1:8000/dashboard](http://127.0.0.1:8000/dashboard) | Real-time Doughnut chart tracking inference distribution |
-| **📈 Prometheus Metrics** | [http://127.0.0.1:8000/metrics](http://127.0.0.1:8000/metrics) | Standard CNCF metrics exposition for scraping |
-| **🩺 Health Probe** | [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health) | Liveness & model readiness check |
+| Playground | [/playground](http://127.0.0.1:8000/playground) | Visual UI to try predictions, with live charts |
+| Swagger docs | [/docs](http://127.0.0.1:8000/docs) | OpenAPI docs (dark theme) |
+| ReDoc | [/redoc](http://127.0.0.1:8000/redoc) | Alternative API reference |
+| Dashboard | [/dashboard](http://127.0.0.1:8000/dashboard) | Doughnut chart of the predictions served so far |
+| Metrics | [/metrics](http://127.0.0.1:8000/metrics) | Prometheus endpoint for scraping |
+| Health | [/health](http://127.0.0.1:8000/health) | Liveness and model readiness check |
 
-### 3. Run Client Demo
+### 3. Try the demo client
 
-In a separate terminal, execute the demo client:
+From another terminal:
 
 ```bash
 python scripts/client_demo.py
@@ -121,32 +124,35 @@ python scripts/client_demo.py
 
 ---
 
-## 🎨 Interactive Prediction Studio
+## Playground
 
-Rather than writing raw JSON requests, the service provides an **Interactive Studio (`/playground`)**:
+`/playground` lets you build an exercise from the browser instead of sending raw JSON:
 
-- **Visual Dropdown Selectors**: Choose risk encounters (`🟢 LOW`, `🟡 MEDIUM`, `🔴 HIGH`) with real-time color coding.
-- **Dynamic Situation Controls**: Add or remove situations on the fly (`+ Add Situation`, `✕`).
-- **Instant Inference & Feedback**: Automatically calls the model upon selection change, displaying confidence distribution bar charts and exact server latency in milliseconds.
-- **One-click Presets**: Quick-load scenarios like *Stress Test (High Risk)* or *Standard*.
+- Pick each situation's risk level from a dropdown (LOW, MEDIUM, HIGH, color coded).
+- Add or remove situations with `+ Add Situation` and `✕`.
+- The model is called every time you change something. You get the class probabilities as a bar chart and the server latency in milliseconds.
+- Presets for common cases, such as *Standard* or *Stress Test (High Risk)*.
 
 ---
 
-## 📡 API Documentation & Endpoints
+## API
 
-### Single Prediction
+### Single prediction
+
 `POST /predict`
 
-Evaluates a single maritime navigation exercise given a sequence of situation risk levels.
+Classifies one exercise from the list of its situation risk levels.
 
-#### Request Payload
+Request:
+
 ```json
 {
   "situations": ["LOW", "MEDIUM", "HIGH", "MEDIUM", "MEDIUM", "LOW"]
 }
 ```
 
-#### Response (`200 OK`)
+Response (`200 OK`):
+
 ```json
 {
   "exercise_difficulty": "MEDIUM",
@@ -160,14 +166,14 @@ Evaluates a single maritime navigation exercise given a sequence of situation ri
 }
 ```
 
----
+### Batch prediction
 
-### Batch Prediction
 `POST /predict/batch`
 
-High-throughput endpoint to evaluate multiple exercises concurrently in a single network roundtrip.
+Classifies several exercises in a single request. Each exercise is keyed by an ID of your choice.
 
-#### Request Payload
+Request:
+
 ```json
 {
   "exercises": {
@@ -177,7 +183,8 @@ High-throughput endpoint to evaluate multiple exercises concurrently in a single
 }
 ```
 
-#### Response (`200 OK`)
+Response (`200 OK`):
+
 ```json
 {
   "predictions": {
@@ -201,69 +208,59 @@ High-throughput endpoint to evaluate multiple exercises concurrently in a single
 
 ---
 
-## 🧪 Test Suite (Strict TDD)
+## Tests
 
-The service is backed by an automated test matrix with **45 tests** across unit, validation, domain edge-cases, and integration layers:
+There are 45 tests covering schema validation, use case logic and edge cases in the domain, the model loader, and the API end to end. The project was developed test-first.
 
 ```bash
-# Execute entire test suite
+# Run everything
 pytest tests/ -v
 
-# Run with test coverage report
+# With coverage
 pytest tests/ -v --cov=predict --cov-report=term-missing
 ```
 
+Expected result:
+
 ```
-============================== test session starts ==============================
 collected 45 items
-
-tests/integration/test_api.py::TestHealthEndpoint ... PASSED
-tests/integration/test_api.py::TestPredictEndpoint ... PASSED
-tests/integration/test_api.py::TestPredictEndpointFailures ... PASSED
-tests/integration/test_model_loader.py::TestModelLoader ... PASSED
-tests/integration/test_model_loader.py::TestXGBoostAdapterIntegration ... PASSED
-tests/unit/test_schemas.py::TestPredictionRequestValid ... PASSED
-tests/unit/test_schemas.py::TestPredictionRequestInvalid ... PASSED
-tests/unit/test_schemas.py::TestPredictionRequestEdgeCases ... PASSED
-tests/unit/test_use_cases.py::TestUseCaseHappyPath ... PASSED
-tests/unit/test_use_cases.py::TestUseCaseEdgeCases ... PASSED
-tests/unit/test_use_cases.py::TestAggregatedFeatures ... PASSED
-
-======================== 45 passed, 100% test success ==========================
+...
+============================== 45 passed ==============================
 ```
 
 ---
 
-## 🐳 Docker Deployment
+## Docker
 
-The application uses a **multi-stage build** based on `python:3.11-slim`, discarding build-time toolchains and reducing attack surface.
+The image is a multi-stage build on `python:3.11-slim`. Build tools stay in the builder stage, so the final image is smaller and has less in it.
 
 ```bash
-# Build production image
+# Build the image
 docker build -t maritime-predict-api:latest .
 
-# Run container (listening on port 8000)
+# Run it (port 8000)
 docker run -d -p 8000:8000 --name maritime-api maritime-predict-api:latest
 
-# Verify non-root user security context
+# Check that it is not running as root
 docker exec maritime-api whoami
-# Output: appuser
+# appuser
 ```
 
 ---
 
-## 💡 Key Engineering Decisions & Trade-offs
+## Design decisions
 
-| Decision | Selection | Rationale |
+| Decision | Choice | Why |
 |---|---|---|
-| **Concurrency Strategy** | Synchronous `def` handlers | XGBoost inference is CPU-bound. FastAPI automatically offloads standard `def` endpoints to AnyIO worker threads, preventing event-loop starvation. |
-| **Model Lifecycle** | FastAPI `lifespan` context | The model is loaded once at startup and kept in memory (`fail-fast`). Avoids cold-start latency per request. |
-| **Semantic Ordinal Scaling** | `LOW: 1 < MEDIUM: 2 < HIGH: 3` | Fixes standard `LabelEncoder` alphabetical flaws (which assign `HIGH=0`), ensuring feature aggregation (`mean`, `max`, `min`) mirrors genuine risk escalation. |
-| **Domain Decoupling** | Domain Enums & Ports | Business rules and use cases remain purely Pythonic without framework dependencies (FastAPI or XGBoost). |
-| **Security Hardening** | Unprivileged Linux User | The Docker image runs under an isolated non-root `appuser` (UID 1001) preventing container breakout escalation. |
-| **Observability** | Prometheus + JSON Middleware | Each request receives a unique `X-Request-ID`, emits duration in ms, and updates Prometheus counters and latency histograms. |
+| Concurrency | Plain `def` handlers | XGBoost inference is CPU-bound. FastAPI runs sync endpoints in AnyIO worker threads, so the event loop is never starved. |
+| Model lifecycle | Loaded once in the FastAPI `lifespan` | The model sits in memory after startup, so there is no load cost per request. If it can't be loaded, the app fails at startup instead of on the first call. |
+| Ordinal encoding | `LOW: 1 < MEDIUM: 2 < HIGH: 3` | `LabelEncoder` orders classes alphabetically (`HIGH = 0`). With an explicit mapping, mean/max/min over the situations actually follow risk. |
+| Decoupling | Domain enums and ports | Use cases and business rules don't import FastAPI or XGBoost, so they can be tested and reused on their own. |
+| Container security | Non-root `appuser` (UID 1001) | The process doesn't run with root privileges inside the container, which limits the damage if something goes wrong. |
+| Observability | Prometheus + JSON logging middleware | Every request gets a unique `X-Request-ID`, its duration is logged in ms, and Prometheus counters and latency histograms are updated. |
 
 ---
 
-## 📄 License
-Distributed under the MIT License. Developed by **Alejandro de la Vega** ([@a-delavega](https://github.com/a-delavega)).
+## License
+
+MIT. Written by Alejandro de la Vega ([@a-delavega](https://github.com/a-delavega)).
