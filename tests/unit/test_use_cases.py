@@ -72,10 +72,10 @@ class TestUseCaseHappyPath:
         call_args = mock_classifier.predict.call_args
         features: AggregatedFeatures = call_args[0][0]
 
-        # Encoded values: [1, 2, 3] -> sum=6, mean=2.0, max=3, min=1, count=3
+        # Encoded values: [1, 2, 3] -> sum=6, mean=2.0, max=3, high_risk_count=1, count=3
         assert features.mean_difficulty == pytest.approx(2.0)
         assert features.max_difficulty == 3.0
-        assert features.min_difficulty == 1.0
+        assert features.high_risk_count == 1.0
         assert features.situation_count == 3
 
     def test_use_case_passes_correct_features_shape(
@@ -100,7 +100,7 @@ class TestUseCaseEdgeCases:
     def test_all_same_difficulty(
         self, use_case: ClassifyExerciseDifficultyUseCase, mock_classifier: MagicMock
     ):
-        """All HIGH (3) → mean=max=min=3.0."""
+        """All HIGH (3) → mean=max=3.0, high_risk_count=5.0."""
         situations = [SituationDifficulty.HIGH] * 5
 
         use_case.execute(situations)
@@ -108,13 +108,13 @@ class TestUseCaseEdgeCases:
         features: AggregatedFeatures = mock_classifier.predict.call_args[0][0]
         assert features.mean_difficulty == 3.0
         assert features.max_difficulty == 3.0
-        assert features.min_difficulty == 3.0
+        assert features.high_risk_count == 5.0
         assert features.situation_count == 5
 
     def test_single_situation_features(
         self, use_case: ClassifyExerciseDifficultyUseCase, mock_classifier: MagicMock
     ):
-        """Single situation → mean=max=min, count=1."""
+        """Single situation → mean=max=2.0, high_risk_count=0.0, count=1."""
         situations = [SituationDifficulty.MEDIUM]
 
         use_case.execute(situations)
@@ -122,7 +122,7 @@ class TestUseCaseEdgeCases:
         features: AggregatedFeatures = mock_classifier.predict.call_args[0][0]
         assert features.mean_difficulty == 2.0
         assert features.max_difficulty == 2.0
-        assert features.min_difficulty == 2.0
+        assert features.high_risk_count == 0.0
         assert features.situation_count == 1
 
     def test_empty_situations_raises(
@@ -161,7 +161,7 @@ class TestAggregatedFeatures:
         features = AggregatedFeatures(
             mean_difficulty=1.5,
             max_difficulty=2.0,
-            min_difficulty=0.0,
+            high_risk_count=0.0,
             situation_count=10,
         )
         result = features.to_feature_list()
@@ -172,7 +172,7 @@ class TestAggregatedFeatures:
         features = AggregatedFeatures(
             mean_difficulty=1.0,
             max_difficulty=2.0,
-            min_difficulty=0.0,
+            high_risk_count=0.0,
             situation_count=5,
         )
         with pytest.raises(AttributeError):

@@ -51,9 +51,10 @@ class ClassifyExerciseDifficultyUseCase:
     def _aggregate(situations: list[SituationDifficulty]) -> AggregatedFeatures:
         """Encode situation difficulties and compute aggregated features."""
         encoded = [s.encoded_value for s in situations]
+        high_risk_count = float(sum(1 for s in situations if s == SituationDifficulty.HIGH))
         return AggregatedFeatures(
             mean_difficulty=sum(encoded) / len(encoded),
             max_difficulty=float(max(encoded)),
-            min_difficulty=float(min(encoded)),
+            high_risk_count=high_risk_count,
             situation_count=len(encoded),
         )

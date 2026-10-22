@@ -67,7 +67,7 @@ def preprocess_and_aggregate(df: pd.DataFrame) -> pd.DataFrame:
         .agg(
             mean_difficulty=("SituationDifficultyEncoded", "mean"),
             max_difficulty=("SituationDifficultyEncoded", "max"),
-            min_difficulty=("SituationDifficultyEncoded", "min"),
+            high_risk_count=("SituationDifficultyEncoded", lambda s: (s == 3).sum()),
             situation_count=("SituationDifficultyEncoded", "count"),
         )
         .reset_index()
@@ -80,7 +80,7 @@ def preprocess_and_aggregate(df: pd.DataFrame) -> pd.DataFrame:
 
 def train(data: pd.DataFrame) -> tuple[XGBClassifier, StandardScaler]:
     """Train XGBoost model without SMOTE and without data leakage."""
-    features = ["mean_difficulty", "max_difficulty", "min_difficulty", "situation_count"]
+    features = ["mean_difficulty", "max_difficulty", "high_risk_count", "situation_count"]
     X = data[features]
     y = data["ExerciseDifficultyEncoded"]
 
@@ -99,7 +99,7 @@ def train(data: pd.DataFrame) -> tuple[XGBClassifier, StandardScaler]:
         objective="multi:softprob",
         num_class=3,
         n_estimators=100,
-        max_depth=4,
+        max_depth=3,
         learning_rate=0.05,
         subsample=0.8,
         colsample_bytree=0.8,
@@ -141,7 +141,7 @@ def save_assets(model: XGBClassifier, scaler: StandardScaler) -> None:
         "mean": scaler.mean_.tolist(),
         "scale": scaler.scale_.tolist(),
         "var": scaler.var_.tolist(),
-        "features": ["mean_difficulty", "max_difficulty", "min_difficulty", "situation_count"],
+        "features": ["mean_difficulty", "max_difficulty", "high_risk_count", "situation_count"],
     }
     scaler_path = ASSETS_DIR / "scaler_params.json"
     with open(scaler_path, "w", encoding="utf-8") as f:

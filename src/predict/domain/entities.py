@@ -56,16 +56,16 @@ EXERCISE_DECODING: dict[int, ExerciseDifficulty] = {
 class AggregatedFeatures:
     """Aggregated features of an exercise's situations, ready for model input.
 
-    These are the 4 features the trained XGBClassifier expects:
-    - mean_difficulty: mean of encoded SituationDifficulty values
-    - max_difficulty: max of encoded SituationDifficulty values
-    - min_difficulty: min of encoded SituationDifficulty values
-    - situation_count: count of situations in the exercise
+    These are the 4 features expected by the optimized XGBClassifier:
+    - mean_difficulty: mean of encoded SituationDifficulty values (1.0 to 3.0)
+    - max_difficulty: max of encoded SituationDifficulty values (1.0 to 3.0)
+    - high_risk_count: count of critical HIGH situations in the exercise
+    - situation_count: total count of situations in the exercise
     """
 
     mean_difficulty: float
     max_difficulty: float
-    min_difficulty: float
+    high_risk_count: float
     situation_count: int
 
     def to_feature_list(self) -> list[float]:
@@ -73,7 +73,7 @@ class AggregatedFeatures:
         return [
             self.mean_difficulty,
             self.max_difficulty,
-            self.min_difficulty,
+            self.high_risk_count,
             float(self.situation_count),
         ]
 

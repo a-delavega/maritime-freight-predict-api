@@ -79,7 +79,7 @@ class TestXGBoostAdapterIntegration:
         features = AggregatedFeatures(
             mean_difficulty=2.0,
             max_difficulty=3.0,
-            min_difficulty=1.0,
+            high_risk_count=1.0,
             situation_count=6,
         )
         result = adapter.predict(features)
@@ -92,7 +92,7 @@ class TestXGBoostAdapterIntegration:
         features = AggregatedFeatures(
             mean_difficulty=2.5,
             max_difficulty=3.0,
-            min_difficulty=2.0,
+            high_risk_count=5.0,
             situation_count=10,
         )
         result = adapter.predict(features)
@@ -104,7 +104,7 @@ class TestXGBoostAdapterIntegration:
         features = AggregatedFeatures(
             mean_difficulty=3.0,
             max_difficulty=3.0,
-            min_difficulty=3.0,
+            high_risk_count=4.0,
             situation_count=4,
         )
         result = adapter.predict(features)
