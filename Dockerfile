@@ -27,7 +27,7 @@ COPY models/ ./models/
 
 # Set PYTHONPATH so the predict package is importable
 ENV PYTHONPATH=/app/src
-ENV MODEL_PATH=/app/models/model_pipeline.joblib
+ENV MODELS_DIR=/app/models
 
 # Security: switch to non-root user
 USER appuser
