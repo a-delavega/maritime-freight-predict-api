@@ -24,6 +24,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
 
-      - name: Run Pytest with Coverage
+      - name: Run Pytest with Strict Coverage Quality Gate
         run: |
-          pytest tests/ -v --cov=predict --cov-report=term-missing
+          pytest tests/ -v --cov=predict --cov-report=term-missing --cov-fail-under=90
