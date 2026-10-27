@@ -7,6 +7,7 @@ standard scaling parameters from JSON. Zero pickle / joblib execution.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from dataclasses import dataclass
@@ -65,7 +66,28 @@ def load_secure_model(models_dir: str | Path) -> LoadedModelAssets:
     if not scaler_path.exists():
         raise ModelLoadError(f"Scaler parameters file not found: {scaler_path}")
 
-    # 1. Load native XGBoost Booster from JSON
+    # 1. Cryptographic Integrity Verification (Supply-Chain & Anti-Tampering Check)
+    metadata: dict = {}
+    if metadata_path.exists():
+        try:
+            with open(metadata_path, "r", encoding="utf-8") as f:
+                metadata = json.load(f)
+        except Exception as e:
+            raise ModelLoadError(f"Failed to parse metadata file at {metadata_path}: {e}") from e
+
+        expected_hashes = metadata.get("sha256", {})
+        if expected_hashes:
+            for file_name, path_obj in [("model.json", model_path), ("scaler_params.json", scaler_path)]:
+                if file_name in expected_hashes:
+                    with open(path_obj, "rb") as f:
+                        computed_hash = hashlib.sha256(f.read()).hexdigest()
+                    if computed_hash != expected_hashes[file_name]:
+                        raise ModelLoadError(
+                            f"Integrity check failed for {file_name}: "
+                            f"expected {expected_hashes[file_name]}, got {computed_hash}"
+                        )
+
+    # 2. Load native XGBoost Booster from JSON
     try:
         booster = xgb.Booster()
         booster.load_model(str(model_path))
@@ -83,14 +105,5 @@ def load_secure_model(models_dir: str | Path) -> LoadedModelAssets:
         )
     except Exception as e:
         raise ModelLoadError(f"Failed to parse scaler parameters at {scaler_path}: {e}") from e
-
-    # 3. Load Metadata (optional or defaults)
-    metadata: dict = {}
-    if metadata_path.exists():
-        try:
-            with open(metadata_path, "r", encoding="utf-8") as f:
-                metadata = json.load(f)
-        except Exception:
-            metadata = {}
 
     return LoadedModelAssets(booster=booster, scaler=scaler, metadata=metadata)

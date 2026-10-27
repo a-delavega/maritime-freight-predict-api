@@ -13,5 +13,9 @@
     "0": "LOW",
     "1": "MEDIUM",
     "2": "HIGH"
+  },
+  "sha256": {
+    "model.json": "fa612119f801c235ac8e844929115a09735b0d99a8e19f373bb310ef569c2769",
+    "scaler_params.json": "2bc7617dd2efa59fa62ae86f9bb52f62806509519e69e021a1e5deca4a717905"
   }
 }

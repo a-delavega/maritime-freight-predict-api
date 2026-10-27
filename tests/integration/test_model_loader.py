@@ -59,6 +59,23 @@ class TestModelLoader:
         assert len(assets.scaler.mean) == 4
         assert len(assets.scaler.scale) == 4
 
+    def test_tampered_model_fails_sha256_integrity_check(self, tmp_path: Path, models_dir: Path):
+        """If model.json content is tampered with, SHA-256 validation raises ModelLoadError."""
+        model_path = models_dir / "model.json"
+        if not model_path.exists():
+            pytest.skip("Real native model.json not found")
+
+        tampered_dir = tmp_path / "tampered"
+        tampered_dir.mkdir()
+        # Copy scaler and metadata
+        (tampered_dir / "scaler_params.json").write_text((models_dir / "scaler_params.json").read_text(encoding="utf-8"), encoding="utf-8")
+        (tampered_dir / "metadata.json").write_text((models_dir / "metadata.json").read_text(encoding="utf-8"), encoding="utf-8")
+        # Tampered model
+        (tampered_dir / "model.json").write_text((models_dir / "model.json").read_text(encoding="utf-8") + " ", encoding="utf-8")
+
+        with pytest.raises(ModelLoadError, match="Integrity check failed"):
+            load_secure_model(tampered_dir)
+
 
 # --- XGBoostAdapter with real native model ---
 
