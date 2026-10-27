@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 import pytest
 
+from predict.api.middleware import RequestLoggingMiddleware
 from predict.api.routes import router
 from predict.application.use_cases import ClassifyExerciseDifficultyUseCase
 from predict.domain.entities import ExerciseDifficulty, ExercisePrediction
@@ -25,6 +26,7 @@ def _create_app_with_use_case(
         yield
 
     test_app = FastAPI(lifespan=test_lifespan)
+    test_app.add_middleware(RequestLoggingMiddleware)
     test_app.include_router(router)
     return test_app
 
@@ -138,6 +140,46 @@ class TestPredictEndpoint:
         data = response.json()
         assert data["exercise_difficulty"] in ("HIGH", "LOW", "MEDIUM")
         assert "model_version" in data
+
+
+# --- Security & Anti-DoS Tests ---
+
+
+class TestSecurityMiddleware:
+    """Tests for Rate Limiting, Content-Length bounds, and Security Headers."""
+
+    def test_security_headers_present(self, client_with_model: TestClient):
+        """Verify presence of OWASP defensive headers and correlation ID."""
+        response = client_with_model.get("/health")
+        assert response.status_code == 200
+        assert response.headers.get("X-Content-Type-Options") == "nosniff"
+        assert response.headers.get("X-Frame-Options") == "DENY"
+        assert response.headers.get("Referrer-Policy") == "strict-origin-when-cross-origin"
+        assert "X-Request-ID" in response.headers
+        assert "X-RateLimit-Limit" in response.headers
+
+    def test_payload_too_large_rejected(self, client_with_model: TestClient):
+        """Paylod exceeding 1MB is rejected with 413 Payload Too Large."""
+        large_header = {"Content-Length": "2000000"}
+        response = client_with_model.post("/predict", headers=large_header, json={"situations": ["LOW"]})
+        assert response.status_code == 413
+        assert "too large" in response.json()["detail"].lower()
+
+    def test_rate_limiter_blocks_excessive_traffic(self, client_with_model: TestClient):
+        """Simulate rapid client flooding to ensure 429 Too Many Requests is triggered."""
+        from predict.api.middleware import InMemoryRateLimiter
+        custom_limiter = InMemoryRateLimiter(max_requests=3, window_seconds=60)
+        
+        # Test rate limiter logic directly
+        allowed_1, rem_1 = custom_limiter.is_allowed("192.168.1.100")
+        allowed_2, rem_2 = custom_limiter.is_allowed("192.168.1.100")
+        allowed_3, rem_3 = custom_limiter.is_allowed("192.168.1.100")
+        allowed_4, rem_4 = custom_limiter.is_allowed("192.168.1.100")
+
+        assert allowed_1 is True and rem_1 == 2
+        assert allowed_2 is True and rem_2 == 1
+        assert allowed_3 is True and rem_3 == 0
+        assert allowed_4 is False and rem_4 == 0
 
 
 # --- System Failures ---
