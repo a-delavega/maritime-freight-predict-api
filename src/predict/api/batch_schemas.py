@@ -5,13 +5,13 @@ Batch prediction Pydantic v2 schemas.
 from __future__ import annotations
 
 from pydantic import BaseModel, Field
-from predict.api.schemas import PredictionRequest, PredictionResponse
+from predict.api.schemas import PredictionResponse, SituationDifficultySchema
 
 
 class BatchPredictionRequest(BaseModel):
     """Batch request containing multiple exercises to classify."""
 
-    exercises: dict[str, list[str]] = Field(
+    exercises: dict[str, list[SituationDifficultySchema]] = Field(
         ...,
         min_length=1,
         max_length=100,

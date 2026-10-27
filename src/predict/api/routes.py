@@ -119,16 +119,16 @@ def predict_batch(
 
     results: dict[str, PredictionResponse] = {}
 
-    for exercise_id, situation_strs in request.exercises.items():
-        if not situation_strs:
+    for exercise_id, situations in request.exercises.items():
+        if not situations:
             raise HTTPException(
                 status_code=422,
                 detail=f"Exercise '{exercise_id}' has empty situations list",
             )
         try:
             domain_situations = [
-                SituationDifficulty(SituationDifficultySchema(s).value)
-                for s in situation_strs
+                SituationDifficulty(s.value)
+                for s in situations
             ]
             pred = use_case.execute(domain_situations)
             PREDICTIONS_TOTAL.labels(

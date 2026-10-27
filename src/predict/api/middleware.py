@@ -20,10 +20,16 @@ logger = logging.getLogger("predict.observability")
 
 
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
-    """Middleware to inject correlation IDs and log structured request telemetry."""
+    """Middleware to inject correlation IDs, add security headers, and log structured request telemetry."""
 
     async def dispatch(self, request: Request, call_next) -> Response:
-        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+        # Enforce sanitization of X-Request-ID to prevent header injection or unbounded lengths
+        raw_request_id = request.headers.get("X-Request-ID")
+        if raw_request_id and len(raw_request_id) <= 64 and raw_request_id.replace("-", "").isalnum():
+            request_id = raw_request_id
+        else:
+            request_id = str(uuid.uuid4())
+
         start_time = time.perf_counter()
 
         response = await call_next(request)
@@ -31,6 +37,12 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
         duration = time.perf_counter() - start_time
         duration_ms = round(duration * 1000, 2)
         response.headers["X-Request-ID"] = request_id
+
+        # Defense-in-depth: Standard OWASP security headers
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        response.headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=()"
 
         # Record Prometheus metric
         HTTP_REQUEST_DURATION_SECONDS.labels(
